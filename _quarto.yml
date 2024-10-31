@@ -1,0 +1,7 @@
+project:
+  title: "Slides_Heitor"
+  output-dir: docs
+render:
+  - Aula*.qmd
+
+

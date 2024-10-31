@@ -1,0 +1,303 @@
+---
+title: "POPAyI: Muscling Ordinal Patterns for low-complex and usability-aware transportation mode detection"
+subtitle: ""
+author: "Isadora Cardoso-Pereira, João B. Borges, Aline C. Viana, Antonio A. F. Loureiro, **Heitor S. Ramos** - heitor@dcc.ufmg.br"
+
+# format: 
+#   revealjs: 
+#     code-fold: true 
+#     execute: 
+#       enabled: true
+#     echo: true
+#     jupyter: python3
+#     slide-number: true
+#     theme: default
+#     controls: true
+#     progress: true
+#     smaller: true
+#     # scrollable: true
+#     chalkboard:
+#       buttons: true
+#       chalk-width: 1
+#       theme: whiteboard
+#     preview-links: auto
+#     logo:  common/logos.png
+#     include-in-header:
+#     - text: |
+#         <style>
+#         .reveal .slide-logo {
+#           max-height: unset;
+#           height: 100px;
+#         }
+#         </style>
+#     style: common/style.css
+#     footer: <https://www.dcc.ufmg.br/~ramosh/>
+format:
+  beamer:
+    theme: metropolis
+    # logo: common/logos.png
+    institute: Federal University of Minas Gerais (UFMG), Brazil, Federal University of Rio Grande do Norte (UFRN), Brazil, Inria, France <br>
+    incremental: true
+    #include-in-header: common/presentQuartoStyle.sty 
+    header-includes: 
+      # - \logo{\ifnum\thepage>1\vspace{-1cm}\includegraphics[width=2cm]{common/logos.png}\fi}
+      - \titlegraphic{\vspace{-.8cm}\hspace*{\fill}\includegraphics[width=6cm]{common/logos.png}}
+---
+ 
+## Introduction
+
+- Transportation Mode Detection (TMD) involves classifying mobility traces to identify the corresponding transport mode. It can provide valuable insights into the mobility preferences, aiding in epidemic prevention, traffic management, and improving quality of life
+
+- Most TMD literature relies on hand-crafted features (reaching hundreds of features) or computationally- and data-intensive DL methods, which pose challenges for resource-constrained Internet of Things (IoT) scenarios
+
+- We present POPAyI, an innovative strategy based on Ordinal Pattern (OP) transformation applied to mobility-related time series that is computationally efficient, scalable, and provides accurate transportation mode detection.
+
+## Ordinal Patterns
+
+A symbolic representation of time series dynamics, capturing intrinsic features without relying on predefined models or heavy computational resources. It needs two parameters:
+
+- Embedding dimension $D \in \mathbb{N}$ to determine the length of the patterns
+
+- Embedding delay $\tau \in \mathbb N$ to define the interval between consecutive data points
+
+## Ordinal Patterns
+
+### A lightweight solution well-suited for edge computing applications, enabling on-device analytics while preserving privacy {.alert }
+
+## Ordinal Patterns
+![](img/ordinal_patterns.png){#op fig-align="center"}
+
+
+## Ordinal Patterns Limitations
+
+Traditional OPs face limitations when dealing with multidimensional data (e.g., mobility)
+
+1. Absence of amplitude information
+  - Be invariant to non-linear monotonic transformation is helpful against noise, but it can be harmful when amplitude contains essential information
+
+  - Previous studies have incorporated amplitude into features extracted from OP, but its application to other OP features and representations remains limited
+
+2. Originally defined for univariate time series
+   - Previous studies have attempted to extend OP to multivariate data, but faced limitations such as increased computational complexity or loss of interpretability
+
+
+## Ordinal Patterns Limitations
+
+![](img/opLimitations.png){#opL fig-align="center"}
+
+## Our approach: PoPayI
+
+POPAyI (Polar Ordinal Patterns with Amplitude Information) is the first work to leverage amplitude information in a multivariate OP approach.
+
+### How POPAyI works?
+
+1. Converts 2D spatial data into symbolic patterns based on ordinal relationships between points
+
+2. Uses polar coordinates to handle 2D mobility data (latitude and longitude)
+
+3. Introduces amplitude information to distinguish variations in movement magnitude (e.g., slow vs. fast-moving vehicles)
+
+## How POPAyI works?
+
+![](img/popayi.png){#popayi fig-align="center"}
+
+## Methodology
+
+A) Data Preprocessing:
+  - Segmentation: Trajectories are divided into segments based on stationary points or the end of the trajectory
+  - Data Handling: Removal of low-quality data, such as out-of-range GPS points and trajectories with fewer than 10 points.
+
+
+## Methodology 
+
+B) POPAyI Transformation:
+
+  - Ordinal Pattern Transformation: Converts time series into ordinal patterns using a sliding window.
+  - Polar Coordinates: Patterns are based on the angle and distance of 2D points, capturing non-linear movement dynamics.
+  - Amplitude Information: Calculates the displacement (distance) between the first and last points in the window, allowing for better distinction between movement types (e.g., slow vs. fast)
+  
+## Methodology 
+
+![](img/methodology.png){#popayiM1 fig-align="center"}
+
+## Methodology
+
+C) Representations Derived from POPAyI:
+  - Probability Distribution: counts the occurrences of each ordinal pattern
+    - Used to compute features like Shannon Permutation Entropy (PE), which measures the randomness of the time series, and Statistical Complexity (SC), which quantifies the level of structure in the data
+  - Transition Network: A graph representation where nodes represent ordinal patterns, and edges represent transitions between patterns
+    - Extract features such as Probability of Self-Transition (how likely a pattern repeats itself), Number of Nodes and Edges, and Average Edge Weights, indicating how dynamic or stable the movement is
+
+## Methodology
+
+![](img/methodology2.png){#popayiM2 fig-align="center"}
+
+## Methodology
+
+D) Feature Extraction:
+  - Features extracted from both the Probability Distribution (e.g., PE, SC) and the Transition Network (e.g., node/edge counts, self-transitions)
+  - Additional statistical features from the mobility data itself, such as mean, variance, max, and min values for distance and speed
+E) Classification:
+  - Features are fed into an XGBoost classifier
+
+## Methodology
+
+![](img/methodology3.png){#popayiM3 width=55% fig-align="center"}
+
+## POPAyI advantages to TMD {.allowframebreaks}
+
+:::{.nonincremental}
+
+- Lightweight Approach
+  - Time complexity is O(n) due to small and constant embedding dimension ($D$) 
+  - Ideal for resource-limited environments, such as IoT
+- Scalability
+  - Computational efficiency with linear time complexity
+  - Works well with large time series and requires minimal space
+- Resilience to Trajectory Size
+  - Handles trajectories of varying sizes (differently from Deep Learning methods)
+  - Adapts to real-world mobility patterns, regardless of trajectory length
+
+ - Robustness
+    - Resilient to GPS errors and dynamic noise
+    - Ensures reliable detection in noisy environments.
+- Enhanced Representation
+  - Captures 2D temporal dynamics and incorporates amplitude.
+  - Improves accuracy in distinguishing transportation modes.
+:::
+
+## Experiments
+
+### Amplitude benefits from POPAyI
+
+**Goal:** Evaluate how incorporating amplitude improves detection of vehicle speed variations
+
+### Setup:
+  - We used Cologne dataset, which contains high-resolution vehicle trajectories with a temporal resolution of one second
+  - Separated into two groups: slow (2-5 m/s) and fast (6-30 m/s) vehicles
+  - Compare results with and without amplitude.
+
+
+## Experiments
+
+![With amplitude: Better separation of vehicle behaviors (clear clusters)](img/exp1.png){#exp1 fig-align="center"}
+
+## Experiments
+
+![Without amplitude: Poor distinction between slow and fast vehicles](img/exp2.png){#exp2  fig-align="center"}
+
+## Experiments 
+
+### Conclusion: Amplitude information enhances the ability to capture mobility dynamics, improving detection accuracy.
+
+## Experiments 
+
+### Transportation Mode Detection
+
+**Goals:** 
+
+:::{.nonincremental}
+  - Predict the transportation mode based on spatiotemporal trajectory data.
+  - Evaluate the effectiveness of POPAyI in classifying different transportation modes.
+  - Compare POPAyI to state-of-the-art Machine Learning (ML) and Deep Learning (DL) methods.
+::: 
+
+## Experiments 
+
+### Transportation Mode Detection
+
+**Setup:**
+
+:::{.nonincremental}
+  - We used GeoLife dataset, which contains 182 users' GPS trajectories over 5 years and various transportation modes: walking, biking, car, bus, subway, train.
+  - Fixed-length segments of 500 points to ensure comparability across all models
+  - Classification using cross-validation with 5 folds and stratified classes
+::: 
+
+## Experiments
+
+### Hyperparameters selection
+
+:::{.nonincremental}
+
+- Explored values:
+  - Embedding Dimension: D = 3, 4, 5
+  - Embedding Delay: τ = 1, 2
+  - Amplitude Threshold: q = 0.0005 to 3 (0.5 m to 3 km)
+- Selection Process:
+  - Used Successive Halving: progressively eliminated weaker configurations based on F1-score
+  - $\tau$ = 2 consistently achieving the best results suggests that non-consecutive points capture more meaningful transport dynamics
+  - Difficulty of establishing a straightforward correlation between hyperparameter values
+:::
+
+### Final choice: D = 3, τ = 2, q = 0.0005 {.alert}
+
+## Experiments
+
+![](img/hyperparameters.png){#hp fig-align="center"}
+
+## Experiments
+
+![](img/ml_comparison.png){#hp fig-align="center"}
+
+## Experiments {.allowframebreaks}
+
+### Transportation Mode Detection - POPAyI vs. 1D OP and POP
+
+### 1D OP:
+:::{.nonincremental}
+
+  - Separates feature extraction for latitude and longitude.
+  - Captures ordinal relationships in 1D space but misses non-linear movement dynamics in 2D mobility data.
+:::
+### POP:
+:::{.nonincremental}
+
+  - Polar Ordinal Patterns (POP) use polar coordinates to represent 2D spatial relationships.
+  - Better suited to capturing complex movement behaviors like turns and changes in direction.
+:::
+### POPAyI:
+
+:::{.nonincremental}
+  - Incorporates amplitude information into POP, capturing both direction and magnitude of movement (e.g., speed changes).
+:::
+
+## Experiments
+
+![](img/1dxpopxpopayi.png){#1dpoppopayi fig-align="center"}
+
+## Experiments
+
+![](img/results.png){#results fig-align="center"}
+
+
+## Confusion Matrix
+
+  - Imbalanced classes might significantly impact classification
+  - Certain transportation modes may misclassify due to shared traffic characteristics and similar temporal dynamics
+  - Classifications are clearer between motor and non-motor transports due to distinct speed and distance behaviors
+  - Some misclassifications result from data quality issues
+  - Impact of False Positives/Negatives varies across ITS applications
+    - Acceptable mixing of transport types in urban planning.
+    - Critical applications require minimal false negatives for safety.
+    - POPAyI Advantage: Fewer false negatives between motorized and non-motorized transports enhance safety in critical applications
+
+## Confusion Matrix
+
+![](img/confMatrix.png){#confMatrix fig-align="center"}
+
+## Conclusions
+
+- POPAyI demonstrates effective TMD by leveraging multivariate ordinal patterns and amplitude information
+- Achieves high accuracy with minimal computational resources, making it suitable for resource-constrained environments (e.g., IoT)
+- Outperforms traditional methods and DL approaches while maintaining a lightweight framework
+
+## Future Directions
+
+- Expand Dataset Applications: Test POPAyI on more diverse mobility datasets to validate generalizability.
+- Enhance Real-Time Adaptability: Improve processing algorithms for better performance in real-time applications.
+- Integrate with Smart City Infrastructure: Explore the use of POPAyI in smart city projects for traffic management and urban planning.
+- Address Misclassifications: Investigate methods to further reduce misclassifications, particularly between similar transportation modes.
+- Incorporate Additional Features: Enhance the model by integrating more features from mobility data, such as environmental factors affecting transport dynamics.
+
+
