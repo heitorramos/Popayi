@@ -271,7 +271,7 @@ E) Classification:
 ![](img/results.png){#results fig-align="center"}
 
 
-## Confusion Matrix
+## Confusion Matrix 
 
   - Imbalanced classes might significantly impact classification
   - Certain transportation modes may misclassify due to shared traffic characteristics and similar temporal dynamics
