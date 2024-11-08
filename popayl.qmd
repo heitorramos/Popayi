@@ -27,7 +27,7 @@ author: "Isadora Cardoso-Pereira, João B. Borges, Aline C. Viana, Antonio A. F.
 #         <style>
 #         .reveal .slide-logo {
 #           max-height: unset;
-#           height: 100px;
+#           height: 80px;
 #         }
 #         </style>
 #     style: common/style.css
@@ -37,11 +37,12 @@ format:
     theme: metropolis
     # logo: common/logos.png
     institute: Federal University of Minas Gerais (UFMG), Brazil, Federal University of Rio Grande do Norte (UFRN), Brazil, Inria, France <br>
-    incremental: true
+    #incremental: true
     #include-in-header: common/presentQuartoStyle.sty 
     header-includes: 
       # - \logo{\ifnum\thepage>1\vspace{-1cm}\includegraphics[width=2cm]{common/logos.png}\fi}
       - \titlegraphic{\vspace{-.8cm}\hspace*{\fill}\includegraphics[width=6cm]{common/logos.png}}
+      - \usepackage{multirow}
 ---
  
 ## Introduction
@@ -65,7 +66,7 @@ A symbolic representation of time series dynamics, capturing intrinsic features 
 ### A lightweight solution well-suited for edge computing applications, enabling on-device analytics while preserving privacy {.alert }
 
 ## Ordinal Patterns
-![](img/ordinal_patterns.png){#op fig-align="center"}
+![](img/ordinal_patterns.pdf){#op fig-align="center"}
 
 
 ## Ordinal Patterns Limitations
@@ -83,7 +84,7 @@ Traditional OPs face limitations when dealing with multidimensional data (e.g., 
 
 ## Ordinal Patterns Limitations
 
-![](img/opLimitations.png){#opL fig-align="center"}
+![](img/opLimitations.pdf){#opL fig-align="center"}
 
 ## Our approach: PoPayI
 
@@ -99,7 +100,7 @@ POPAyI (Polar Ordinal Patterns with Amplitude Information) is the first work to 
 
 ## How POPAyI works?
 
-![](img/popayi.png){#popayi fig-align="center"}
+![](img/popayi.pdf){#popayi fig-align="center"}
 
 ## Methodology
 
@@ -116,9 +117,9 @@ B) POPAyI Transformation:
   - Polar Coordinates: Patterns are based on the angle and distance of 2D points, capturing non-linear movement dynamics.
   - Amplitude Information: Calculates the displacement (distance) between the first and last points in the window, allowing for better distinction between movement types (e.g., slow vs. fast)
   
-## Methodology 
+<!-- ## Methodology 
 
-![](img/methodology.png){#popayiM1 fig-align="center"}
+![](img/methodology.png){#popayiM1 fig-align="center"} -->
 
 ## Methodology
 
@@ -128,9 +129,9 @@ C) Representations Derived from POPAyI:
   - Transition Network: A graph representation where nodes represent ordinal patterns, and edges represent transitions between patterns
     - Extract features such as Probability of Self-Transition (how likely a pattern repeats itself), Number of Nodes and Edges, and Average Edge Weights, indicating how dynamic or stable the movement is
 
-## Methodology
+<!-- ## Methodology
 
-![](img/methodology2.png){#popayiM2 fig-align="center"}
+![](img/methodology2.png){#popayiM2 fig-align="center"} -->
 
 ## Methodology
 
@@ -142,7 +143,7 @@ E) Classification:
 
 ## Methodology
 
-![](img/methodology3.png){#popayiM3 width=55% fig-align="center"}
+![](img/methodology3.pdf){#popayiM3 width=55% fig-align="center"}
 
 ## POPAyI advantages to TMD {.allowframebreaks}
 
@@ -180,11 +181,11 @@ E) Classification:
 
 ## Experiments
 
-![With amplitude: Better separation of vehicle behaviors (clear clusters)](img/exp1.png){#exp1 fig-align="center"}
+![With amplitude: Better separation of vehicle behaviors (clear clusters)](img/exp1.pdf){#exp1 fig-align="center"}
 
 ## Experiments
 
-![Without amplitude: Poor distinction between slow and fast vehicles](img/exp2.png){#exp2  fig-align="center"}
+![Without amplitude: Poor distinction between slow and fast vehicles](img/exp2.pdf){#exp2  fig-align="center"}
 
 ## Experiments 
 
@@ -234,11 +235,18 @@ E) Classification:
 
 ## Experiments
 
-![](img/hyperparameters.png){#hp fig-align="center"}
+![](img/hyperparameters.pdf){#hp fig-align="center"}
 
 ## Experiments
 
-![](img/ml_comparison.png){#hp fig-align="center"}
+| Model | Accuracy | F1-Score | Precision | Recall |
+|---------|:-----|------:|:------:| :------:|
+|SVM | $37.36\%$   | $15.62\%$  | $20.35\%$  | $33.82\%$  | 
+|DT | $78.96\%$  | $74.67\%$   | $74.77\%$  | $74.65\%$  |
+| RF | $86.35\%$  | $82.53\%$  | $81.64\%$   | $83.72\%$ |
+|XGBoost|  $87.12\%$  | $84.02\%$  | $83.28\%$  | $85.90\%$  |
+: Comparison for different ML methods. $D = 3$, $\tau = 2$, and $q = 0.0005$
+<!-- ![](img/ml_comparison.png){#hp fig-align="center"} -->
 
 ## Experiments {.allowframebreaks}
 
@@ -263,12 +271,133 @@ E) Classification:
 :::
 
 ## Experiments
+|   | D | F1| Recall | Precision | # of param|
+|-----------|:-|------:|:------:| :------:|:------:|
+|POPAyI ($q=0.005$)|3| $84.02\%$ | $83.28\%$ | $85.90\%$ | $7.8\times 10^1$|
+|                  |4| $84.04\%$ | $83.40\%$ | $84.81\%$ | $1.2\times 10^3$|
+|                  |5| $83.49\%$ | $82.80\%$ | $84.32\%$ | $2.8\times 10^4$|
+|POP               |3| $82.24\%$ | $81.23\%$ | $83.47\%$ | $2.1\times 10^1$|
+|                  |4| $82.31\%$ | $81.45\%$ | $83.32\%$ | $3.0\times 10^2$|
+|                  |5| $81.13\%$ | $79.39\%$ | $81.99\%$ | $7.3\times 10^3$|
+|1D OP             |3| $78.96\%$ | $78.49\%$ | $78.04\%$ | $2.1\times 10^1$|
+|                  |4| $78.40\%$ | $77.81\%$ | $79.31\%$ | $3.0\times 10^2$|
+|                  |5| $80.81\%$ | $80.16\%$ | $81.63\%$ | $7.3\times 10^3$|
+: Results for POPAyI with and without amplitude (i.e., \textit{POP}). 
 
-![](img/1dxpopxpopayi.png){#1dpoppopayi fig-align="center"}
+<!-- ![](img/1dxpopxpopayi.png){#1dpoppopayi fig-align="center"} -->
 
 ## Experiments
+\begin{table}
+\scriptsize
+\centering
+\begin{tabular}{cccccc}
+\toprule
+TM sets & 
+Methods & 
+F1& 
+D. Size & 
+\# feat. & 
+\# params.\\ 
+\midrule
+ \multirow{5}{*}{\begin{tabular}[c]{@{}c@{}}walk, bike\\ car\&taxi, bus\end{tabular}} & 
+DT & 
+$74.77\%$ & 
+10-8000 & 
+13 & - \\
+% 
+& 
+\textit{POPAyI} & 
+$86.34\%$ & 
+10-8000 & 19 & 
+$7.8\times 10^1$ \\
+& 
+Light. CNN & 
+$87.10\%$ & 
+500 & 
+500 & 
+$1.1\times 10^4$ \\
+& 
+\textit{POPAyI} & 
+$86.86\%$  & 
+500 & 
+19 & 
+$7.8\times 10^1$ \\
+& 
+\textit{POPAyI} & 
+$87.41\%$  & 
+1000 & 
+19 & 
+$7.8\times 10^1$ \\
+\cline{1-6}
 
-![](img/results.png){#results fig-align="center"}
+\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}walk, bike, car, train \\ bus\&taxi, subway\end{tabular}} & 
+XGBoost & 
+$87.40\%$ & 
+10-39120 & 
+111 & - \\
+& 
+\textit{POPAyI} & 
+$82.40\%$ & 
+10-39120 & 
+19 & 
+$7.8\times 10^1$ \\
+\cline{1-6}
+
+\multirow{8}{*}{\begin{tabular}[c]{@{}c@{}}walk, bike,\\ car\&taxi, bus, \\train\end{tabular}} & 
+Best CNN & 
+$74.80\%$ & 
+200 & 
+200 & 
+$2.6 \times 10^6$ \\
+& 
+7 CNNs & 
+$83.90\%$ & 
+200 & 
+200 & 
+$1.8 \times 10^7$ \\
+& 
+LSTM & 
+$91.90\%$ & 
+200 & 
+200 & 
+$8.1 \times 10^6$ \\
+& 
+AE + CNN & 
+$88.28\%$ & 
+200 & 
+200 & $4.1 \times 10^7$ \\ 
+& 
+Light. CNN & 
+$83.90\%$ & 
+500 & 
+500 & 
+$1.1 \times 10^4$ \\ 
+& 
+\textit{POPAyI} & 
+$85.68\%$  & 
+500 & 
+19 & 
+$7.8\times 10^1$ \\
+& 
+\textit{POPAyI} & 
+$85.77\%$ & 
+1000 & 
+19 & 
+$7.8\times 10^1$ \\ 
+& 
+\textit{POPAyI} & 
+$86.71\%$  & 
+10-17000 & 
+19 & 
+$7.8\times 10^1$ \\
+%\cline{1-6}
+
+
+ \\ \bottomrule
+\end{tabular}%
+\end{table}
+
+<!-- ![](img/results.png){#results fig-align="center"} -->
 
 
 ## Confusion Matrix 
@@ -284,7 +413,7 @@ E) Classification:
 
 ## Confusion Matrix
 
-![](img/confMatrix.png){#confMatrix fig-align="center"}
+![](img/confMatrix.pdf){#confMatrix fig-align="center"}
 
 ## Conclusions
 
