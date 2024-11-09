@@ -271,7 +271,7 @@ E) Classification:
 :::
 
 ## Experiments
-|   | D | F1| Recall | Precision | # of param|
+|   | D | F1| Recall | Precision | # param|
 |-----------|:-|------:|:------:| :------:|:------:|
 |POPAyI ($q=0.005$)|3| $84.02\%$ | $83.28\%$ | $85.90\%$ | $7.8\times 10^1$|
 |                  |4| $84.04\%$ | $83.40\%$ | $84.81\%$ | $1.2\times 10^3$|
